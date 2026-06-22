@@ -1,7 +1,6 @@
 from minsearch import Index
 from gitsource import GithubRepositoryDataReader
 
-
 def load_lesson_data():
     reader = GithubRepositoryDataReader(
         repo_owner="DataTalksClub",

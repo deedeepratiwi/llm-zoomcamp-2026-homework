@@ -23,30 +23,33 @@ class RAGBase:
         llm_client,
         instructions=INSTRUCTIONS,
         prompt_template=PROMPT_TEMPLATE,
-        course='llm-zoomcamp',
+        # course='llm-zoomcamp',
         model='gpt-5.4-mini'
     ):
         self.index = index
         self.llm_client = llm_client
         self.instructions = instructions
-        self.course = course
+        # self.course = course
         self.prompt_template = prompt_template
         self.model = model
 
     def search(self, query):
+        # boost_dict = {'question': 3.0, 'section': 0.5}
+        # filter_dict = {'course': self.course}
 
         return self.index.search(
             query,
-            text_fields=['content'],
-            keyword_fields=['filename'],
+            # num_results=num_results,
+            # boost_dict=boost_dict,
+            # filter_dict=filter_dict
         )
 
     def build_context(self, search_results):
         lines = []
 
         for doc in search_results:
-            lines.append(doc['content'])
-            lines.append(doc['filename'])
+            lines.append('Content ' + doc['content'])
+            lines.append('Filename: ' + doc['filename'])
             lines.append('')
 
         return '\n'.join(lines).strip()
@@ -73,5 +76,5 @@ class RAGBase:
     def rag(self, query):
         search_results = self.search(query)
         prompt = self.build_prompt(query, search_results)
-        answer = self.llm(prompt)
-        return answer.output_text, answer.usage
+        response = self.llm(prompt)
+        return response.output_text, response.usage.input_tokens
